@@ -42,7 +42,20 @@ Este proyecto consiste en una **API REST** desarrollada con **Spring Boot** que 
 - **Logs** configurados con **Log4j2** mediante un archivo `log4j2.yml`.
 - **Endpoints**:
   - `POST` para insertar un `TraceMsg`.
+
+  JSON:
+
+    {
+      "sessionId": "abc123",
+      "payload": "Mensaje de prueba"
+    }
+
+    http://localhost:9898/api/traces/insert
+
   - `GET` para consultar un rango de fechas.
+
+  http://localhost:9898/api/traces/range?from=2025-01-01T00:00:00Z&to=2025-12-31T23:59:59Z
+
 - **Contador** `hacom.test.developer.insert.rx` que se incrementa en cada inserción.
 - **Toda la configuración** en `application.yml`, incluyendo puerto (`apiPort=9898`), URI y DB de MongoDB, ajustes de logging y Actuator.
 
