@@ -1,0 +1,103 @@
+/*
+ * Archivo: build.gradle
+ * Descripción: Configuración de Gradle para un proyecto Spring Boot que usa:
+ * - Spring WebFlux
+ * - MongoDB reactivo
+ * - Log4j2 (excluyendo Logback)
+ * - Lombok
+ * - Actuator
+ * - Validación con Spring
+ */
+
+plugins {
+    // Plugin de Spring Boot que facilita la configuración y empaquetado de la aplicación
+    id 'org.springframework.boot' version '2.4.3'
+    // Plugin para administrar versiones de dependencias de Spring (Dependency Management)
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    // Plugin de Gradle para proyectos Java
+    id 'java'
+}
+
+// Configuración del grupo y la versión del proyecto
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8' // Se usará Java 8
+
+repositories {
+    // Repositorio central de Maven para descargar dependencias
+    mavenCentral()
+}
+
+// Sección para excluir librerías que no queremos en las configuraciones
+configurations.all {
+    // Excluir la librería log4j-to-slf4j (no la necesitamos porque usaremos log4j2 puro)
+    exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    // Excluir la librería logback-classic (vamos a usar log4j2 en su lugar)
+    exclude group: 'ch.qos.logback', module: 'logback-classic'
+}
+
+dependencies {
+    /*
+     * Spring Boot WebFlux:
+     * Permite crear aplicaciones reactivas usando Netty y el modelo de programación reactivo.
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    
+    /*
+     * Starter de Log4j2 para Spring Boot:
+     * - Se excluye el starter-logging de Spring Boot para no usar Logback.
+     */
+    implementation ('org.springframework.boot:spring-boot-starter-log4j2') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+
+    /*
+     * Librerías de Log4j2 (versión segura):
+     * - log4j-core, log4j-api, y log4j-slf4j-impl
+     * para registrar logs con Log4j2 en lugar de Logback.
+     */
+    implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
+    implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.1'
+
+    /*
+     * Jackson JSR310:
+     * Proporciona serializadores/deserializadores para tipos de fecha y hora de Java 8+ (LocalDateTime, OffsetDateTime, etc.)
+     */
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    /*
+     * Starter de MongoDB reactivo:
+     * Permite usar MongoDB de manera reactiva (sincronía no bloqueante).
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+
+    /*
+     * Starter de Actuator:
+     * Provee endpoints de monitoreo y métricas de la aplicación (health, info, etc.)
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    /*
+     * Starter de validación:
+     * Habilita la anotación @Valid y @NotNull, etc. para validar beans y DTOs.
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
+    /*
+     * Lombok:
+     * Librería para reducir el boilerplate code (getters, setters, constructores).
+     * - implementation: añade Lombok en tiempo de ejecución
+     * - annotationProcessor: genera código en tiempo de compilación
+     */
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    
+    /*
+     * Dependencias de Testing:
+     * - Starter Test: incluye JUnit, Mockito, etc. para pruebas unitarias/integración
+     * - Reactor Test: librería para pruebas reactivas
+     */
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+}

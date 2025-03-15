@@ -1,0 +1,29 @@
+server:
+  port: 9898
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/exampleDb
+      database: exampleDb
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    httptrace:
+      enabled: true
+    mappings:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+  file:
+    name: logs/app.log
